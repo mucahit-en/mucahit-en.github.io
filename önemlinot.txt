@@ -1,0 +1,4 @@
+<div class="hero-actions fade-in delay-300">
+            <a href="download.html" class="btn-primary">
+                <span>Oynayın.</span>
+            </a>

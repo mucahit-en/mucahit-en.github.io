@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="tr" class="notranslate">
+
+<head>
+    <link rel="icon" type="image/png" href="M-EN-Lessions_logo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mücahit - EN Lessions Activity</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <nav class="navbar-container">
+        <div class="liquid-nav fade-in">
+            <a href="index.html" class="nav-brand">
+                <div class="brand-logo">M</div>
+            <span class="brand-text">Mücahit - EN</span>
+                </a>
+
+
+            <div class="nav-links">
+                <a href="index.html" class="nav-item active">Ana Sayfa</a>
+                <a href="siniflar.html" class="nav-item">Sınıf Seçenekleri</a>
+                <a href="oyunlar.html" class="nav-item">Oyunlarımız</a>
+            </div>
+
+    </nav>
+
+    <header class="hero">
+        <h1 class="hero-title text-gradient fade-in delay-100">Mücahit'in İngilizce Eğitim Aktiviteleri Sitesine Hoş Geldiniz.</h1>
+        <p class="hero-subtitle fade-in delay-200">
+            Oyunlara erişim sağlamak için lütfen önce sınıf seçiniz. Daha sonra istediğiniz sınıfa tıkladığınızda oyunların listesi karşınızda belirecektir.
+        </p>
+
+        <a href="javascript:void(0)" onclick="derseBasla()" class="btn-primary">
+            <i data-lucide="play"></i>
+            Oyunlar ve Aktiviteler
+        </a>
+            <div class="hero-actions fade-in delay-300">
+            <a href="siniflar.html" class="btn-primary">
+                <span>Sınıf Seçeceğim</span>
+            </a>
+        </div>
+    </header>
+
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div style="font-weight:700; font-size:1.2rem; color:#fff; display:flex; gap:10px; align-items:center;">
+                    <div style="width:24px; height:24px; background:var(--color-accent-green); border-radius:6px; display:flex; align-items:center; justify-content:center;">M</div>
+                    Mücahit - English Activity - Ders Öğretmeni : Mehmet Köksal
+                </div>
+    </footer>
+
+    <script>
+    function derseBasla() {
+        const kayitliSinif = localStorage.getItem('seciliSinif');
+        
+        if (kayitliSinif && kayitliSinif !== "null") {
+            // Eğer sınıf seçiliyse direkt oyunlara git
+            window.location.href = 'oyunlar.html?sinif=' + kayitliSinif;
+        } else {
+            // Seçili değilse sınıf seçme sayfasına gönder
+            window.location.href = 'siniflar.html';
+        }
+    }
+    
+    // Sayfa açıldığında buton metnini güncelleyebiliriz (İsteğe bağlı)
+    window.onload = function() {
+        const kayitliSinif = localStorage.getItem('seciliSinif');
+        const btn = document.querySelector('.btn-primary'); // Ana butonun sınıfı
+        if (kayitliSinif && btn) {
+            btn.innerHTML = `<i data-lucide="play"></i> ${kayitliSinif}. Sınıfa Devam Et`;
+            lucide.createIcons();
+        }
+    }
+</script>
+</body>
+
+</html>

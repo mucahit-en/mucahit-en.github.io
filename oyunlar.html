@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <link rel="icon" type="image/png" href="M-EN-Lessions_logo.png">
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mücahit - EN Lessions Activity</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+        html {
+        zoom: 0.9;
+        -moz-transform: scale(0.9);
+        -moz-transform-origin: top center;
+    }
+    
+        :root {
+            --color-bg-dark: #0c0e0c;
+            --color-accent: #00f2ff; 
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --shadow-glow: 0 0 20px rgba(0, 242, 255, 0.2);
+            --color-error: #ff4444;
+        }
+        body {
+            margin: 0; padding: 0; font-family: 'Inter', sans-serif;
+            background: var(--color-bg-dark) url('./background.png') center/cover fixed;
+            color: white; min-height: 100vh;
+        }
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); z-index: -1;
+        }
+        .main-content { margin-left: 250px; padding: 40px; display: flex; flex-direction: column; align-items: center; }
+        .text-gradient {
+            background: linear-gradient(135deg, #fff 0%, var(--color-accent) 100%);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; font-size: 3.5rem; font-weight: 800;
+        }
+        .game-panel {
+            background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 30px; padding: 50px;
+            width: 100%; max-width: 850px; min-height: 450px; box-shadow: var(--shadow-glow);
+        }
+        .option-card {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+            padding: 20px; border-radius: 16px; cursor: pointer; transition: 0.3s;
+            margin: 10px 0; text-align: center; font-weight: 700; font-size: 1.2rem;
+        }
+        .option-card:hover { border-color: var(--color-accent); background: rgba(0, 242, 255, 0.15); transform: translateY(-3px); }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; backdrop-filter: blur(8px); }
+        #error-modal {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(20, 0, 0, 0.4); backdrop-filter: blur(25px);
+            border: 2px solid var(--color-error); border-radius: 30px; padding: 50px;
+            z-index: 1000; text-align: center; width: 90%; max-width: 450px;
+        }
+        .shake { animation: shakeAnim 0.5s ease-in-out; }
+        @keyframes shakeAnim { 0%, 100% { transform: translate(-50%, -50%) rotate(0deg); } 20% { transform: translate(-50%, -50%) rotate(-3deg) translateX(-10px); } 40% { transform: translate(-50%, -50%) rotate(3deg) translateX(10px); } }
+        @media (max-width: 850px) { .main-content { margin-left: 0; padding-top: 100px; } }
+    </style>
+</head>
+<body>
+    <audio id="alkis-ses" src="https://www.myinstants.com/media/sounds/applause-8.mp3" preload="auto"></audio>
+    <audio id="yanlis-ses" src="https://www.myinstants.com/media/sounds/sadtrombone.mp3" preload="auto"></audio>
+
+    <div id="modal-bg" class="modal-overlay" onclick="closeError()"></div>
+    <div id="error-modal">
+        <i data-lucide="frown" style="color:var(--color-error); width:80px; height:80px; margin-bottom:20px;"></i>
+        <h2 style="margin:0; font-size:2.5rem; color:#fff;">Na na na naaa!</h2>
+        <p style="color:#ffcccc; margin-top:15px;">Hıııı yanlış soru eki! Tekrar dene bakalım.</p>
+        <button onclick="closeError()" class="option-card" style="margin-top:30px; width:100%; background:rgba(255,68,68,0.2); border-color:var(--color-error);">Kapat</button>
+    </div>
+
+    <nav class="navbar-container">
+        <div class="liquid-nav">
+            <a href="index.html" class="nav-brand"><div class="brand-logo">M</div><span class="brand-text">Mücahit - EN</span></a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-item">Ana Sayfa</a>
+                <a href="siniflar.html" class="nav-item">Sınıf Seçenekleri</a>
+                <a href="oyunlar.html" class="nav-item active">Oyunlarımız</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <header style="text-align: center; margin-bottom: 40px;">
+            <h1 id="baslik" class="text-gradient">Soru Ekleri Avı</h1>
+        </header>
+        <main id="oyun-alani" class="game-panel"></main>
+    </div>
+
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div style="font-weight:700; font-size:1.2rem; color:#fff; display:flex; gap:10px; align-items:center;">
+                    <div style="width:24px; height:24px; background:var(--color-accent-green); border-radius:6px; display:flex; align-items:center; justify-content:center;">M</div>
+                    Mücahit - English Activity - Ders Öğretmeni : Mehmet Köksal
+                </div>
+    </footer>
+
+
+    <script>
+        // SORU EKLERİ (WH- QUESTIONS) ODAKLI VERİ SETİ
+        const allGames = {
+            "2": [
+                {q:"What", a:"Ne", options:["Ne","Nerede","Kim"]},
+                {q:"Who", a:"Kim", options:["Kim","Nasıl","Ne"]},
+                {q:"How", a:"Nasıl", options:["Nasıl","Ne zaman","Nerede"]},
+                {q:"Where", a:"Nerede", options:["Nerede","Kim","Nasıl"]},
+                {q:"How many", a:"Kaç tane", options:["Kaç tane","Ne kadar","Neden"]},
+                {q:"What is this?", a:"Bu nedir?", options:["Bu nedir?","Bu kimdir?","Neredesin?"]},
+                {q:"Who is he?", a:"O kimdir?", options:["O kimdir?","O nedir?","O nasıldır?"]},
+                {q:"How old", a:"Kaç yaşında", options:["Kaç yaşında","Kaç tane","Ne zaman"]},
+                {q:"Where is it?", a:"O nerede?", options:["O nerede?","O nedir?","O kimdir?"]},
+                {q:"What color", a:"Hangi renk", options:["Hangi renk","Kaç renk","Neden renk"]}
+            ],
+            "3": [
+                {q:"What", a:"Ne", options:["Ne","Hangi","Neden"]},
+                {q:"How are you?", a:"Nasılsın?", options:["Nasılsın?","Nerelisin?","Kimsin?"]},
+                {q:"How many", a:"Kaç tane", options:["Kaç tane","Hangi","Nerede"]},
+                {q:"Where are you from?", a:"Nerelisin?", options:["Nerelisin?","Nasılsın?","Kaç yaşındasın?"]},
+                {q:"Who", a:"Kim", options:["Kim","Ne","Nerede"]},
+                {q:"Which", a:"Hangisi", options:["Hangisi","Neden","Nasıl"]},
+                {q:"What is your name?", a:"Adın ne?", options:["Adın ne?","Nerelisin?","Nasılsın?"]},
+                {q:"How old are you?", a:"Kaç yaşındasın?", options:["Kaç yaşındasın?","Neredesin?","Kimsin?"]},
+                {q:"Where is the cat?", a:"Kedi nerede?", options:["Kedi nerede?","Kedi ne?","Kedi kim?"]},
+                {q:"What color is it?", a:"O ne renk?", options:["O ne renk?","O kaç renk?","O hangi renk?"]}
+            ],
+            "4": [
+                {q:"When", a:"Ne zaman", options:["Ne zaman","Neden","Nasıl"]},
+                {q:"Whose", a:"Kimin", options:["Kimin","Kim","Hangi"]},
+                {q:"Why", a:"Neden", options:["Neden","Nasıl","Ne zaman"]},
+                {q:"Where", a:"Nerede", options:["Nerede","Ne","Kim"]},
+                {q:"What time", a:"Saat kaç", options:["Saat kaç","Ne zaman","Kaç tane"]},
+                {q:"How much", a:"Ne kadar (Fiyat/Miktar)", options:["Ne kadar","Kaç tane","Neden"]},
+                {q:"Which one", a:"Hangisi", options:["Hangisi","Kimin","Nerede"]},
+                {q:"Who is your teacher?", a:"Öğretmeniniz kim?", options:["Öğretmeniniz kim?","Öğretmeniniz nerede?","Öğretmeniniz nasıl?"]},
+                {q:"What is your job?", a:"Mesleğin ne?", options:["Mesleğin ne?","Neredesin?","Kiminle?"]},
+                {q:"Where do you live?", a:"Nerede yaşıyorsun?", options:["Nerede yaşıyorsun?","Nasılsın?","Ne zaman geliyorsun?"]}
+            ],
+            "5": [
+                {q:"What kind of", a:"Ne tür", options:["Ne tür","Nasıl","Hangi"]},
+                {q:"How often", a:"Ne sıklıkla", options:["Ne sıklıkla","Ne zaman","Kaç tane"]},
+                {q:"How far", a:"Ne kadar uzak", options:["Ne kadar uzak","Ne kadar uzun","Ne kadar geniş"]},
+                {q:"Why", a:"Neden / Niçin", options:["Neden / Niçin","Nasıl","Kimin"]},
+                {q:"When is your birthday?", a:"Doğum günün ne zaman?", options:["Doğum günün ne zaman?","Doğum günün nerede?","Doğum günün nasıl?"]},
+                {q:"Which class", a:"Hangi sınıf", options:["Hangi sınıf","Kaç sınıf","Kimin sınıfı"]},
+                {q:"What is the matter?", a:"Sorun nedir?", options:["Sorun nedir?","Neredesin?","Saat kaç?"]},
+                {q:"Where is the hospital?", a:"Hastane nerede?", options:["Hastane nerede?","Hastane hangisi?","Hastane kim?"]},
+                {q:"How can I go to...?", a:"...ya nasıl gidebilirim?", options:["...ya nasıl gidebilirim?","...ya ne zaman gidebilirim?","...ya kiminle gidebilirim?"]},
+                {q:"Whose book is this?", a:"Bu kimin kitabı?", options:["Bu kimin kitabı?","Bu hangi kitap?","Bu ne kitabı?"]}
+            ],
+            "6": [
+                {q:"What time", a:"Saat kaçta", options:["Saat kaçta","Ne zaman","Hangi gün"]},
+                {q:"How often", a:"Ne sıklıkla", options:["Ne sıklıkla","Ne zaman","Neden"]},
+                {q:"How much", a:"Ne kadar", options:["Ne kadar","Kaç tane","Hangi"]},
+                {q:"Why do you like it?", a:"Onu neden seviyorsun?", options:["Onu neden seviyorsun?","Onu nasıl seviyorsun?","Onu ne zaman seviyorsun?"]},
+                {q:"Where were you?", a:"Neredeydin?", options:["Neredeydin?","Kimdin?","Nasıldın?"]},
+                {q:"When was it?", a:"O ne zamandı?", options:["O ne zamandı?","O neredeydi?","O nasıldı?"]},
+                {q:"What happened?", a:"Ne oldu?", options:["Ne oldu?","Nasıl oldu?","Neden oldu?"]},
+                {q:"Who was your hero?", a:"Kahramanın kimdi?", options:["Kahramanın kimdi?","Kahramanın neredeydi?","Kahramanın nasıldı?"]},
+                {q:"Which movie", a:"Hangi film", options:["Hangi film","Ne tür film","Kaç film"]},
+                {q:"How was your weekend?", a:"Hafta sonun nasıldı?", options:["Hafta sonun nasıldı?","Hafta sonun neredeydi?","Hafta sonun ne zamandı?"]}
+            ],
+            "7": [
+                {q:"How tall", a:"Boyu ne kadar", options:["Boyu ne kadar","Ne kadar uzak","Ne kadar ağır"]},
+                {q:"What does she look like?", a:"O nasıl görünüyor?", options:["O nasıl görünüyor?","O neyi seviyor?","O nerede yaşıyor?"]},
+                {q:"How long", a:"Ne kadar süre", options:["Ne kadar süre","Ne kadar uzak","Ne kadar geniş"]},
+                {q:"What happened in the end?", a:"Sonunda ne oldu?", options:["Sonunda ne oldu?","Sonunda neredeydi?","Sonunda kim geldi?"]},
+                {q:"Why did you go?", a:"Neden gittin?", options:["Neden gittin?","Nasıl gittin?","Kiminle gittin?"]},
+                {q:"Which animal", a:"Hangi hayvan", options:["Hangi hayvan","Ne tür hayvan","Kaç hayvan"]},
+                {q:"Who invented it?", a:"Onu kim icat etti?", options:["Onu kim icat etti?","Onu nasıl icat etti?","Onu nerede icat etti?"]},
+                {q:"Where did they live?", a:"Onlar nerede yaşadı?", options:["Onlar nerede yaşadı?","Onlar ne zaman yaşadı?","Onlar nasıl yaşadı?"]},
+                {q:"How many planets", a:"Kaç tane gezegen", options:["Kaç tane gezegen","Hangi gezegen","Neden gezegen"]},
+                {q:"What should we do?", a:"Ne yapmalıyız?", options:["Ne yapmalıyız?","Nasıl yapmalıyız?","Nerede yapmalıyız?"]}
+            ],
+            "8": [
+                {q:"What is your excuse?", a:"Mazeretin ne?", options:["Mazeretin ne?","Neden gelmedin?","Nasıl yapacaksın?"]},
+                {q:"How do you communicate?", a:"Nasıl iletişim kurarsın?", options:["Nasıl iletişim kurarsın?","Neden iletişim kurarsın?","Kiminle iletişim kurarsın?"]},
+                {q:"Which chores", a:"Hangi ev işleri", options:["Hangi ev işleri","Ne kadar ev işi","Kimin ev işi"]},
+                {q:"How long does it take?", a:"Ne kadar sürer?", options:["Ne kadar sürer?","Ne kadar tutar?","Nereden gider?"]},
+                {q:"What are the ingredients?", a:"Malzemeler nelerdir?", options:["Malzemeler nelerdir?","Nasıl pişirilir?","Nerede satılır?"]},
+                {q:"Whose responsibility", a:"Kimin sorumluluğu", options:["Kimin sorumluluğu","Hangi sorumluluk","Neden sorumluluk"]},
+                {q:"Why is it important?", a:"O neden önemlidir?", options:["O neden önemlidir?","O nasıl önemlidir?","O ne zaman önemlidir?"]},
+                {q:"Where is the destination?", a:"Varış noktası neresi?", options:["Varış noktası neresi?","Ne zaman varacağız?","Nasıl gideceğiz?"]},
+                {q:"What type of music", a:"Ne tür müzik", options:["Ne tür müzik","Hangi müzik","Kimin müziği"]},
+                {q:"How often do you go online?", a:"Ne sıklıkla internete girersin?", options:["Ne sıklıkla internete girersin?","Neden internete girersin?","Nasıl internete girersin?"]}
+            ]
+        };
+
+        const params = new URLSearchParams(window.location.search);
+        let selectedSinif = params.get('sinif') || localStorage.getItem('seciliSinif') || "6";
+
+        if (!allGames[selectedSinif]) {
+            window.location.href = 'siniflar.html';
+        } else {
+            localStorage.setItem('seciliSinif', selectedSinif);
+            document.getElementById('baslik').innerText = selectedSinif + ". Sınıf Soru Ekleri";
+            
+            let currentQ = 0;
+            const gameData = allGames[selectedSinif];
+
+            function renderQuiz() {
+                const item = gameData[currentQ];
+                const container = document.getElementById('oyun-alani');
+                const shuffledOpts = [...item.options].sort(() => Math.random() - 0.5);
+
+                container.innerHTML = `
+                    <div style="text-align:center;">
+                        <p style="color:var(--color-accent); font-weight:800; letter-spacing:1px;">SORU ${currentQ + 1} / ${gameData.length}</p>
+                        <h2 style="font-size:3.2rem; margin: 30px 0;">"${item.q}"</h2>
+                        <div style="display:grid; grid-template-columns:1fr; gap:15px; max-width:550px; margin:40px auto;">
+                            ${shuffledOpts.map(opt => `<div class="option-card" onclick="check('${opt}', '${item.a}')">${opt}</div>`).join('')}
+                        </div>
+                    </div>`;
+                lucide.createIcons();
+            }
+
+            window.check = function(selected, correct) {
+                if(selected === correct) {
+                    currentQ++;
+                    if(currentQ < gameData.length) { renderQuiz(); } 
+                    else { 
+                        const sound = document.getElementById('alkis-ses');
+                        sound.play();
+                        setTimeout(() => { sound.pause(); sound.currentTime = 0; }, 3000);
+
+                        document.getElementById('oyun-alani').innerHTML = `
+                            <div style="text-align:center; padding:60px;">
+                                <i data-lucide="party-popper" style="width:100px; height:100px; color:var(--color-accent); margin-bottom:30px;"></i>
+                                <h2 style='font-size:3.5rem;'>HARİKA! 🏆</h2>
+                                <p style="font-size:1.3rem;">Tüm soru eklerini doğru bildin. Tam bir İngilizce canavarıymışsın!</p>
+                                <button onclick="location.href='siniflar.html'" class="option-card" style="width:280px; margin:30px auto;">Sınıf Değiştir</button>
+                            </div>`;
+                        lucide.createIcons();
+                    }
+                } else {
+                    const fail = document.getElementById('yanlis-ses');
+                    fail.currentTime = 0;
+                    fail.play();
+
+                    const modal = document.getElementById('error-modal');
+                    const bg = document.getElementById('modal-bg');
+                    bg.style.display = 'block';
+                    modal.style.display = 'block';
+                    modal.classList.add('shake');
+                    setTimeout(() => modal.classList.remove('shake'), 500);
+                }
+            }
+
+            window.closeError = function() {
+                document.getElementById('modal-bg').style.display = 'none';
+                document.getElementById('error-modal').style.display = 'none';
+                document.getElementById('yanlis-ses').pause();
+            }
+
+            renderQuiz();
+        }
+        lucide.createIcons();
+    </script>
+</body>
+</html>
